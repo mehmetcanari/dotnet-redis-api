@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Redis.Application\Redis.Application.csproj" />
         <ProjectReference Include="..\Redis.Persistence\Redis.Persistence.csproj" />
         <ProjectReference Include="..\Redis.Domain\Redis.Domain.csproj" />
     </ItemGroup>
