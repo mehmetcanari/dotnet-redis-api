@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Redis.Application.Abstract.Service;
+using Redis.Application.Configuration;
 using StackExchange.Redis;
 
 namespace Redis.Application.Services;
@@ -10,10 +11,10 @@ public class CacheService : ICacheService
     private readonly TimeSpan _defaultExpiration;
     private readonly ILogger<CacheService> _logger;
 
-    public CacheService(IDatabase database, TimeSpan defaultExpiration, ILogger<CacheService> logger)
+    public CacheService(IDatabase database, RedisSettings redisSettings, ILogger<CacheService> logger)
     {
         _database = database;
-        _defaultExpiration = defaultExpiration;
+        _defaultExpiration = redisSettings.DefaultExpiration;
         _logger = logger;
     }
 
@@ -69,22 +70,21 @@ public class CacheService : ICacheService
         }
     }
 
-    public Task InvalidateCacheAsync(string key)
+    public Task InvalidateCacheAsync(List<string> keys)
     {
-        if (string.IsNullOrEmpty(key))
+        if (keys == null || keys.Count == 0)
         {
-            throw new ArgumentNullException(nameof(key));
+            throw new ArgumentNullException(nameof(keys));
         }
-
-        var cacheKey = $"{key}";
 
         try
         {
-            return _database.KeyDeleteAsync(cacheKey);
+            var tasks = keys.Select(key => _database.KeyDeleteAsync(key)).ToArray();
+            return Task.WhenAll(tasks);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error invalidating cache for key: {Key}", key);
+            _logger.LogError(ex, "Error invalidating cache for keys: {Keys}", string.Join(", ", keys));
             throw;
         }
     }

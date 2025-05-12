@@ -1,0 +1,29 @@
+POST {{baseUrl}}/player/create
+Content-Type: application/json
+
+{
+  "nickname": "",
+  "country": ""
+}
+
+###
+
+GET {{baseUrl}}/player
+
+###
+
+GET {{baseUrl}}/player/1
+
+###
+
+PUT {{baseUrl}}/player/1
+Content-Type: application/json
+
+{
+  "nickname": "",
+  "country": ""
+}
+
+###
+
+DELETE {{baseUrl}}/player/{id}

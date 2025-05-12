@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Redis.Application.Configuration;
+using Redis.Persistence.Context;
+using StackExchange.Redis;
+
 namespace dotnet_redis_demo;
 
 public static class Program
@@ -5,20 +10,14 @@ public static class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        DiContainer.RegisterServices(builder.Services);
+        
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        #region Redis Configuration
-
-        builder.Services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = "localhost:6379";
-            options.InstanceName = "RedisDemo_";
-        });
-
-        #endregion
+        DiContainer.RegisterRedis(builder.Services);
+        DiContainer.RegisterDatabase(builder.Services);
         
         var app = builder.Build();
 
@@ -31,7 +30,6 @@ public static class Program
         }
         
         #endregion
-
         
         app.MapControllers();
         app.Run();

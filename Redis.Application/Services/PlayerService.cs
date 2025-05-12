@@ -13,24 +13,37 @@ public class PlayerService : IPlayerService
     private readonly ILogger<PlayerService> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<Player> _playerRepository;
+    private readonly ICacheService _cacheService;
+    private const string GetAllPlayersCacheKey = "GetAllPlayers";
+    private const string GetPlayerByIdCacheKey = "GetPlayerById";
 
-    public PlayerService(ILogger<PlayerService> logger, IUnitOfWork unitOfWork, IGenericRepository<Player> playerRepository)
+    public PlayerService(ILogger<PlayerService> logger, IUnitOfWork unitOfWork, IGenericRepository<Player> playerRepository, ICacheService cacheService)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _playerRepository = playerRepository;
+        _cacheService = cacheService;
     }
 
     public async Task<IEnumerable<PlayerResponseDto>> GetAllPlayersAsync()
     {
         try
         {
+            var cachedPlayers = await _cacheService.GetCacheAsync<IEnumerable<PlayerResponseDto>>(GetAllPlayersCacheKey);
+            if (cachedPlayers != null)
+            {
+                Console.WriteLine("Cache hit for GetAllPlayers");
+                return cachedPlayers;
+            }
+            
             var players = await _playerRepository.GetAllEntitiesAsync();
             var playerResponses = players.Select(player => new PlayerResponseDto
             {
                 Nickname = player.Nickname,
                 Country = player.Country,
             });
+            
+            await _cacheService.SetCacheAsync(GetAllPlayersCacheKey, playerResponses, TimeSpan.FromMinutes(5));
 
             return playerResponses;
         }
@@ -45,17 +58,26 @@ public class PlayerService : IPlayerService
     {
         try
         {
+            var cachedPlayer = await _cacheService.GetCacheAsync<PlayerResponseDto>($"{GetPlayerByIdCacheKey}_{id}");
+            if (cachedPlayer != null)
+            {
+                Console.WriteLine($"Cache hit for GetPlayerById with ID {id}");
+                return cachedPlayer;
+            }
+            
             var player = await _playerRepository.GetEntityByIdAsync(id);
             if (player == null)
             {
                 throw new KeyNotFoundException($"Player with ID {id} not found.");
             }
-
+            
             var playerResponse = new PlayerResponseDto
             {
                 Nickname = player.Nickname,
                 Country = player.Country,
             };
+            
+            await _cacheService.SetCacheAsync($"{GetPlayerByIdCacheKey}_{id}", playerResponse, TimeSpan.FromMinutes(5));
 
             return playerResponse;
         }
@@ -85,6 +107,11 @@ public class PlayerService : IPlayerService
             
             await _playerRepository.AddAsync(player);
             await _unitOfWork.CommitAsync();
+            await _cacheService.SetCacheAsync(GetAllPlayersCacheKey, player, TimeSpan.FromMinutes(5));
+            await _cacheService.InvalidateCacheAsync([
+                $"{GetPlayerByIdCacheKey}_{player.Id}",
+                GetAllPlayersCacheKey
+            ]);
         }
         catch (Exception e)
         {
@@ -108,6 +135,11 @@ public class PlayerService : IPlayerService
 
             await _playerRepository.UpdateAsync(player);
             await _unitOfWork.CommitAsync();
+            await _cacheService.SetCacheAsync($"{GetPlayerByIdCacheKey}_{id}", player, TimeSpan.FromMinutes(5));
+            await _cacheService.InvalidateCacheAsync([
+                $"{GetPlayerByIdCacheKey}_{player.Id}",
+                GetAllPlayersCacheKey
+            ]);
         }
         catch (Exception e)
         {
@@ -128,6 +160,10 @@ public class PlayerService : IPlayerService
 
             await _playerRepository.DeleteAsync(player);
             await _unitOfWork.CommitAsync();
+            await _cacheService.InvalidateCacheAsync([
+                $"{GetPlayerByIdCacheKey}_{id}",
+                GetAllPlayersCacheKey
+            ]);
         }
         catch (Exception e)
         {
