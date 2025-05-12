@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
-using Redis.Application.Abstract;
-using Redis.Application.Abstract.Repository;
 using Redis.Application.Abstract.Service;
 using Redis.Application.DTO.Request;
 using Redis.Application.DTO.Response;
 using Redis.Domain.Entities;
+using Redis.Infrastructure.Abstract;
+using Redis.Infrastructure.Abstract.Repository;
 
 namespace Redis.Application.Services;
 

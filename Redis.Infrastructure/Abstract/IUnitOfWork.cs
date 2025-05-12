@@ -1,4 +1,4 @@
-namespace Redis.Application.Abstract;
+namespace Redis.Infrastructure.Abstract;
 
 public interface IUnitOfWork : IDisposable
 {

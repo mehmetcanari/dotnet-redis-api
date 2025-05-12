@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Redis.Application.Abstract;
-using Redis.Application.Abstract.Repository;
+using Redis.Infrastructure.Abstract.Repository;
 using Redis.Persistence.Context;
 
 namespace Redis.Infrastructure.Repositories;

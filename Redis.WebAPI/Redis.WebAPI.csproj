@@ -9,6 +9,10 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.1" />
         <ProjectReference Include="..\Redis.Application\Redis.Application.csproj" />
     </ItemGroup>
 

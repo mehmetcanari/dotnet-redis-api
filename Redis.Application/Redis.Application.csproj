@@ -9,4 +9,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Redis.Infrastructure\Redis.Infrastructure.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+    </ItemGroup>
 </Project>

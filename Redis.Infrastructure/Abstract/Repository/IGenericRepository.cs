@@ -1,4 +1,4 @@
-namespace Redis.Application.Abstract.Repository;
+namespace Redis.Infrastructure.Abstract.Repository;
 
 public interface IGenericRepository<T> where T : class
 {
