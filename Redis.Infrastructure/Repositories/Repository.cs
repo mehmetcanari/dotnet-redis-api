@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Redis.Application.Abstract;
+using Redis.Application.Abstract.Repository;
 using Redis.Persistence.Context;
 
 namespace Redis.Infrastructure.Repositories;
@@ -16,7 +17,7 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : c
         _logger = logger;
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public async Task<IEnumerable<TEntity>> GetAllEntitiesAsync()
     {
         try
         {
@@ -30,6 +31,24 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : c
         catch (Exception e)
         {
             _logger.LogError(e, "An error occurred while retrieving entities.");
+            throw;
+        }
+    }
+    
+    public async Task<TEntity> GetEntityByIdAsync(int id)
+    {
+        try
+        {
+            var entity = await _context.Set<TEntity>().FindAsync(id);
+            if (entity == null)
+            {
+                throw new KeyNotFoundException($"Entity with ID {id} not found.");
+            }
+            return entity;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred while retrieving an entity.");
             throw;
         }
     }

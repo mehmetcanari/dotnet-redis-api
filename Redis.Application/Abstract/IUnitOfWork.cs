@@ -2,5 +2,5 @@ namespace Redis.Application.Abstract;
 
 public interface IUnitOfWork : IDisposable
 {
-    Task SaveChangesAsync();
+    Task CommitAsync();
 }

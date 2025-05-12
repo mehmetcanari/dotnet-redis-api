@@ -2,19 +2,12 @@ namespace Redis.Domain.Entities;
 
 public class Score
 {
-    public Guid Id { get; init; }
-    public required string PlayerId { get; init; }
+    public int Id { get; init; }
     public required int Value { get; init; }
     public required DateTime CreatedAt { get; init; }
     
     #region Navigation Properties
-    public Player Player { get; set; } = null!;
+    public required int PlayerId { get; init; }
+    public Player Player { get; init; } = null!;
     #endregion
-    
-    public Score(string playerId, int value)
-    {
-        PlayerId = playerId;
-        Value = value;
-        CreatedAt = DateTime.UtcNow;
-    }
 }

@@ -3,15 +3,22 @@ using Redis.Persistence.Context;
 
 namespace Redis.Infrastructure.UoW;
 
-public class UnitOfWork(ApplicationDatabaseContext context) : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
-    public Task SaveChangesAsync()
+    private readonly ApplicationDatabaseContext _context;
+
+    public UnitOfWork(ApplicationDatabaseContext context)
     {
-        return context.SaveChangesAsync();
+        _context = context;
+    }
+
+    public Task CommitAsync()
+    {
+        return _context.SaveChangesAsync();
     }
 
     public void Dispose()
     {
-        context.Dispose();
+        _context.Dispose();
     }
 }
