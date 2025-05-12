@@ -1,9 +1,11 @@
+@baseUrl = http://localhost:5001/api
+
 POST {{baseUrl}}/player/create
 Content-Type: application/json
 
 {
-  "nickname": "",
-  "country": ""
+  "nickname": "MehmetCanAri0718",
+  "country": "TR"
 }
 
 ###
@@ -26,4 +28,4 @@ Content-Type: application/json
 
 ###
 
-DELETE {{baseUrl}}/player/{id}
+DELETE {{baseUrl}}/player/1

@@ -18,7 +18,7 @@ public class PlayerController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetPlayerById(int id)
+    public async Task<IActionResult> GetPlayerById([FromRoute] int id)
     {
         try
         {
@@ -63,7 +63,7 @@ public class PlayerController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdatePlayer(int id, [FromBody] PlayerUpdateRequestDto updateRequestDto)
+    public async Task<IActionResult> UpdatePlayer([FromRoute] int id, [FromBody] PlayerUpdateRequestDto updateRequestDto)
     {
         try
         {
@@ -78,7 +78,7 @@ public class PlayerController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletePlayer(int id)
+    public async Task<IActionResult> DeletePlayer([FromRoute] int id)
     {
         try
         {

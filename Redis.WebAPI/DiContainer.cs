@@ -22,6 +22,7 @@ public static class DiContainer
         services.AddScoped<IPlayerService, PlayerService>();
         services.AddScoped<IScoreService, ScoreService>();
         services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IScoreRepository, ScoreRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
     

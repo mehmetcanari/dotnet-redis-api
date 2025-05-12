@@ -33,7 +33,7 @@ public class ScoreController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetScoreById(int id)
+    public async Task<IActionResult> GetScoreById([FromRoute] int id)
     {
         try
         {
@@ -47,7 +47,7 @@ public class ScoreController : ControllerBase
         }
     }
     
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateScore([FromBody] ScoreCreateRequestDto createRequestDto)
     {
         try

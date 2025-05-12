@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Redis.Application.Abstract.Service;
 using Redis.Application.Configuration;
 using StackExchange.Redis;
+using System.Text.Json;
 
 namespace Redis.Application.Services;
 
@@ -10,12 +11,18 @@ public class CacheService : ICacheService
     private readonly IDatabase _database;
     private readonly TimeSpan _defaultExpiration;
     private readonly ILogger<CacheService> _logger;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public CacheService(IDatabase database, RedisSettings redisSettings, ILogger<CacheService> logger)
     {
         _database = database;
         _defaultExpiration = redisSettings.DefaultExpiration;
         _logger = logger;
+        _jsonOptions = new JsonSerializerOptions
+        {
+            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
+            WriteIndented = true
+        };
     }
 
     public Task SetCacheAsync(string key, object value, TimeSpan? expiration = null)
@@ -35,7 +42,7 @@ public class CacheService : ICacheService
 
         try
         {
-            var serializedValue = System.Text.Json.JsonSerializer.Serialize(value);
+            var serializedValue = JsonSerializer.Serialize(value, _jsonOptions);
             return _database.StringSetAsync(cacheKey, serializedValue, expirationTime);
         }
         catch (Exception ex)
@@ -60,7 +67,7 @@ public class CacheService : ICacheService
                 return default;
             }
 
-            var deserializedValue = System.Text.Json.JsonSerializer.Deserialize<T>(cachedValue!);
+            var deserializedValue = JsonSerializer.Deserialize<T>(cachedValue!, _jsonOptions);
             return deserializedValue;
         }
         catch (Exception ex)

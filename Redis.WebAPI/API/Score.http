@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:5001/api
+
+GET {{baseUrl}}/score
+
+###
+
+GET {{baseUrl}}/score/1
+
+###
+
+POST {{baseUrl}}/score/create
+Content-Type: application/json
+
+{
+  "playerId": 1,
+  "score": 750
+}

@@ -38,7 +38,11 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : c
     {
         try
         {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+            var entity = await query
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+            
             if (entity == null)
             {
                 throw new KeyNotFoundException($"Entity with ID {id} not found.");
@@ -85,12 +89,8 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : c
     {
         try
         {
-            var obj = await _context.Set<TEntity>().FindAsync(entity);
-            if (obj != null)
-            {
-                _context.Set<TEntity>().Remove(obj);
-                await _context.SaveChangesAsync();
-            }
+            _context.Set<TEntity>().Remove(entity);
+            await _context.SaveChangesAsync();
         }
         catch (Exception e)
         {

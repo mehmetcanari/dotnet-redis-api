@@ -12,12 +12,12 @@ public class ScoreService : IScoreService
 {
     private readonly ILogger<ScoreService> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<Score> _scoreRepository;
+    private readonly IScoreRepository _scoreRepository;
     private readonly ICacheService _cacheService;
     private const string GetAllScoresCacheKey = "GetAllScores";
     private const string GetScoreByIdCacheKey = "GetScoreById";
     
-    public ScoreService(ILogger<ScoreService> logger, IUnitOfWork unitOfWork, IGenericRepository<Score> scoreRepository, ICacheService cacheService)
+    public ScoreService(ILogger<ScoreService> logger, IUnitOfWork unitOfWork, IScoreRepository scoreRepository, ICacheService cacheService)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
@@ -36,10 +36,14 @@ public class ScoreService : IScoreService
                 return cachedScores;
             }
             
-            var scores = await _scoreRepository.GetAllEntitiesAsync();
+            var scores = await _scoreRepository.GetAllScoresAsync();
             var scoreResponses = scores.Select(score => new ScoreResponseDto
             {
-                Player = score.Player,
+                Player = new PlayerResponseDto
+                {
+                    Nickname = score.Player.Nickname,
+                    Country = score.Player.Country,
+                },
                 Score = score.Value,
             });
             
@@ -65,7 +69,7 @@ public class ScoreService : IScoreService
                 return cachedScore;
             }
             
-            var score = await _scoreRepository.GetEntityByIdAsync(id);
+            var score = await _scoreRepository.GetScoreByIdAsync(id);
             if (score == null)
             {
                 throw new KeyNotFoundException($"Score with ID {id} not found.");
@@ -73,7 +77,11 @@ public class ScoreService : IScoreService
 
             var scoreResponse = new ScoreResponseDto
             {
-                Player = score.Player,
+                Player = new PlayerResponseDto
+                {
+                    Nickname = score.Player.Nickname,
+                    Country = score.Player.Country,
+                },
                 Score = score.Value,
             };
             
@@ -99,7 +107,7 @@ public class ScoreService : IScoreService
                 CreatedAt = DateTime.UtcNow,
             };
 
-            await _scoreRepository.AddAsync(score);
+            await _scoreRepository.CreateScoreAsync(score);
             await _unitOfWork.CommitAsync();
             await _cacheService.SetCacheAsync(GetAllScoresCacheKey, score, TimeSpan.FromMinutes(5));
             await _cacheService.InvalidateCacheAsync([$"{GetScoreByIdCacheKey}_{score.Id}",GetAllScoresCacheKey]);
