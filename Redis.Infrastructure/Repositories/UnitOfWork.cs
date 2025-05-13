@@ -1,7 +1,7 @@
 using Redis.Infrastructure.Abstract;
 using Redis.Persistence.Context;
 
-namespace Redis.Infrastructure.UoW;
+namespace Redis.Infrastructure.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {

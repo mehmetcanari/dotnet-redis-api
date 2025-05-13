@@ -6,7 +6,6 @@ using Redis.Domain.Entities;
 using Redis.Infrastructure.Abstract;
 using Redis.Infrastructure.Abstract.Repository;
 using Redis.Infrastructure.Repositories;
-using Redis.Infrastructure.UoW;
 using Redis.Persistence.Context;
 using StackExchange.Redis;
 
@@ -49,6 +48,8 @@ public static class DiContainer
     public static void RegisterDatabase(IServiceCollection services)
     {
         services.AddDbContext<ApplicationDatabaseContext>(options =>
-            options.UseInMemoryDatabase("ApplicationDatabase"));
+            options.UseNpgsql(
+                "Host=localhost;Port=5432;Database=RedisDemo;Username=postgres;Password=1234",
+                b => b.MigrationsAssembly("Redis.Persistence")));
     }
 }

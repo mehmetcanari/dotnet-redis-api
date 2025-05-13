@@ -24,7 +24,7 @@ public class Repository<TEntity> : IGenericRepository<TEntity> where TEntity : c
             var entities = await query
                 .AsNoTracking()
                 .ToListAsync();
-            
+
             return entities;
         }
         catch (Exception e)

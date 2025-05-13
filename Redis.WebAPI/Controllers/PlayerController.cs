@@ -23,6 +23,12 @@ public class PlayerController : ControllerBase
         try
         {
             var player = await _playerService.GetPlayerByIdAsync(id);
+
+            if (player == null)
+            {
+                return NotFound("Player not found.");
+            }
+
             return Ok(player);
         }
         catch (Exception ex)
@@ -38,6 +44,12 @@ public class PlayerController : ControllerBase
         try
         {
             var players = await _playerService.GetAllPlayersAsync();
+
+            if (players == null || !players.Any())
+            {
+                return NotFound("No players found.");
+            }
+
             return Ok(players);
         }
         catch (Exception ex)

@@ -23,6 +23,12 @@ public class ScoreController : ControllerBase
         try
         {
             var scores = await _scoreService.GetAllScoresAsync();
+
+            if (scores == null || !scores.Any())
+            {
+                return NotFound("No scores found.");
+            }
+
             return Ok(scores);
         }
         catch (Exception ex)
@@ -38,6 +44,12 @@ public class ScoreController : ControllerBase
         try
         {
             var score = await _scoreService.GetScoreByIdAsync(id);
+
+            if (score == null)
+            {
+                return NotFound("Score not found.");
+            }
+
             return Ok(score);
         }
         catch (Exception ex)
