@@ -4,7 +4,7 @@ POST {{baseUrl}}/player/create
 Content-Type: application/json
 
 {
-  "nickname": "MehmetCanAri0718",
+  "nickname": "Player1092",
   "country": "TR"
 }
 
@@ -22,8 +22,8 @@ PUT {{baseUrl}}/player/1
 Content-Type: application/json
 
 {
-  "nickname": "",
-  "country": ""
+  "nickname": "Player1092",
+  "country": "TR"
 }
 
 ###

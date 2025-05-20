@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.WebAPI", "Redis.WebAPI\Redis.WebAPI.csproj", "{B1050802-5EEE-42DB-B037-F58A7FAE26EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.Presentation", "Redis.Presentation\Redis.Presentation.csproj", "{B1050802-5EEE-42DB-B037-F58A7FAE26EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.Application", "Redis.Application\Redis.Application.csproj", "{0F3B7234-622B-4493-8EA2-951843223108}"
 EndProject

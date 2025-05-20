@@ -37,6 +37,11 @@ public class ScoreService : IScoreService
             }
             
             var scores = await _scoreRepository.GetAllScoresAsync();
+            if (scores == null || !scores.Any())
+            {
+                throw new KeyNotFoundException("No scores found.");
+            }
+            
             var scoreResponses = scores.Select(score => new ScoreResponseDto
             {
                 Player = new PlayerResponseDto
